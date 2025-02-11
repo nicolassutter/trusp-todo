@@ -61,7 +61,7 @@ function HomeComponent() {
     },
   })
 
-  const updateTodo = useMutation({
+  const updateTodoMutation = useMutation({
     mutationFn: async ({
       id,
       todo,
@@ -107,6 +107,19 @@ function HomeComponent() {
     },
   })
 
+  function handleUpdateTodo(id: string, todo: Omit<Partial<Todo>, 'id'>) {
+    updateTodoMutation.mutate(
+      { id, todo },
+      {
+        // specifying the onSettled on each .mutate call makes it so that the callback
+        // is only called once even if multiple mutations are called at the same time.
+        onSettled: () => {
+          return queryClient.invalidateQueries(todosQueryOptions)
+        },
+      },
+    )
+  }
+
   return (
     <div className='p-4 w-full'>
       <header className='grid justify-start gap-4 pt-10'>
@@ -133,21 +146,15 @@ function HomeComponent() {
               <TodoItem
                 key={todo.id}
                 todo={todo}
+                onUpdateTitle={(newTitle) => {
+                  handleUpdateTodo(todo.id, {
+                    title: newTitle,
+                  })
+                }}
                 onToggle={() => {
-                  updateTodo.mutate(
-                    {
-                      id: todo.id,
-                      todo: {
-                        completed: !todo.completed,
-                      },
-                    },
-                    // refetch after **every** queued mutation is done
-                    {
-                      onSettled: () => {
-                        return queryClient.invalidateQueries(todosQueryOptions)
-                      },
-                    },
-                  )
+                  handleUpdateTodo(todo.id, {
+                    completed: !todo.completed,
+                  })
                 }}
                 onDelete={() => {
                   deleteTodo.mutate(todo.id)
