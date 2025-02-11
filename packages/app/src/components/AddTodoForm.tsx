@@ -15,6 +15,7 @@ import type { FunctionComponent } from 'react'
 import type { RandomUser } from '~/utils/randomUsers'
 import { computeAssigneeFullName } from '~/utils/randomUsers'
 import { AssigneeSelect } from './AssigneeSelect'
+import { SpinLoader } from './Loaders'
 
 const formSchema = z.object({
   todoTitle: z.string().min(1, {
@@ -30,7 +31,7 @@ interface AddTodoFormProps {
     title: string
     assigneeName: string
     assigneeAvatar: string
-  }) => void
+  }) => Promise<void>
   users: RandomUser[]
 }
 
@@ -43,8 +44,11 @@ export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
     },
   })
 
-  function onSubmit({ todoTitle, assigneeName }: z.infer<typeof formSchema>) {
-    props.onSubmit({
+  async function onSubmit({
+    todoTitle,
+    assigneeName,
+  }: z.infer<typeof formSchema>) {
+    await props.onSubmit({
       title: todoTitle,
       assigneeName: assigneeName,
       assigneeAvatar:
@@ -95,7 +99,10 @@ export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
             </FormItem>
           )}
         />
-        <Button type='submit'>Add Todo</Button>
+        <Button type='submit'>
+          Add Todo
+          {form.formState.isSubmitting && <SpinLoader />}
+        </Button>
       </form>
     </Form>
   )

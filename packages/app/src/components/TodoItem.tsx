@@ -80,7 +80,7 @@ export const TodoItem: FunctionComponent<{
           )}
         </div>
 
-        <div className='flex items-center space-x-2'>
+        <div className='flex flex-col sm:items-center gap-2 sm:flex-row'>
           {isEditing ? (
             <AssigneeSelect
               value={editedAssigneeName}
@@ -100,48 +100,50 @@ export const TodoItem: FunctionComponent<{
             </Avatar>
           )}
 
-          {isEditing ? (
-            <>
+          <div className='flex gap-2 items-center'>
+            {isEditing ? (
+              <>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={handleSaveClick}
+                  className='text-green-600 hover:text-green-700 hover:bg-green-100 shrink-0'
+                >
+                  <Check className='h-4 w-4' />
+                  <span className='sr-only'>Save todo</span>
+                </Button>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={handleCancelClick}
+                  className='text-red-600 hover:text-red-700 hover:bg-red-100 shrink-0'
+                >
+                  <X className='h-4 w-4' />
+                  <span className='sr-only'>Cancel edit</span>
+                </Button>
+              </>
+            ) : (
               <Button
                 variant='ghost'
                 size='icon'
-                onClick={handleSaveClick}
-                className='text-green-600 hover:text-green-700 hover:bg-green-100 shrink-0'
+                onClick={handleEditClick}
+                className='text-blue-600 hover:text-blue-700 hover:bg-blue-100 shrink-0'
               >
-                <Check className='h-4 w-4' />
-                <span className='sr-only'>Save todo</span>
+                <Edit2 className='h-4 w-4' />
+                <span className='sr-only'>Edit todo</span>
               </Button>
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={handleCancelClick}
-                className='text-red-600 hover:text-red-700 hover:bg-red-100 shrink-0'
-              >
-                <X className='h-4 w-4' />
-                <span className='sr-only'>Cancel edit</span>
-              </Button>
-            </>
-          ) : (
+            )}
+
             <Button
               variant='ghost'
               size='icon'
-              onClick={handleEditClick}
-              className='text-blue-600 hover:text-blue-700 hover:bg-blue-100 shrink-0'
+              onClick={onDelete}
+              className='text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0'
             >
-              <Edit2 className='h-4 w-4' />
-              <span className='sr-only'>Edit todo</span>
+              <Trash2 className='h-4 w-4' />
+              <span className='sr-only'>Delete todo</span>
             </Button>
-          )}
-
-          <Button
-            variant='ghost'
-            size='icon'
-            onClick={onDelete}
-            className='text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0'
-          >
-            <Trash2 className='h-4 w-4' />
-            <span className='sr-only'>Delete todo</span>
-          </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

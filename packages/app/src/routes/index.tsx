@@ -167,12 +167,18 @@ function HomeComponent() {
 
         {!randomUsersQuery.isPending && (
           <AddTodoForm
-            onSubmit={({ title, assigneeAvatar, assigneeName }) => {
-              createTodo.mutate({
-                title,
-                assignee_name: assigneeName,
-                assignee_avatar: assigneeAvatar,
-              })
+            onSubmit={async ({ title, assigneeAvatar, assigneeName }) => {
+              // await so that we can show the loading spinner
+              try {
+                await createTodo.mutateAsync({
+                  title,
+                  assignee_name: assigneeName,
+                  assignee_avatar: assigneeAvatar,
+                })
+              } catch (error) {
+                if (import.meta.env.PROD) return
+                console.error('Failed to create todo', error)
+              }
             }}
             users={users}
           ></AddTodoForm>

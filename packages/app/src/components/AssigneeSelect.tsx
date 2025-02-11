@@ -16,7 +16,7 @@ export const AssigneeSelect: FunctionComponent<{
   controlled?: boolean
 }> = ({ onValueChange, controlled = false, assignees, value }) => {
   const trigger = (
-    <SelectTrigger>
+    <SelectTrigger className='min-w-40'>
       <SelectValue placeholder='Select an assignee' />
     </SelectTrigger>
   )
