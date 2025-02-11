@@ -11,10 +11,7 @@ import { pb, type Todo } from '~/utils/pocketbase'
 import { TodoItem } from '~/components/TodoItem'
 import { AddTodoForm } from '~/components/AddTodoForm'
 import { produce } from 'immer'
-import {
-  computeAssigneeFullName,
-  randomUsersResponse,
-} from '~/utils/randomUsers'
+import { randomUsersResponse } from '~/utils/randomUsers'
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,

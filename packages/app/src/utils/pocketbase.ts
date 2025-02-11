@@ -1,10 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../auth/pb_data/types.d.ts" />
-
 import PocketBase, { type RecordService } from 'pocketbase'
 import { config } from './config'
 
-export type User = auth.AuthUser
+type User = {
+  email: string
+  name?: string
+  avatar?: string
+}
 
 export type Todo = {
   id: string
