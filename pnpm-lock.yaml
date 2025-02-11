@@ -68,6 +68,9 @@ importers:
       dotenv:
         specifier: ^16.4.7
         version: 16.4.7
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
       isbot:
         specifier: ^5.1.17
         version: 5.1.21
@@ -6282,8 +6285,7 @@ snapshots:
 
   ignore@5.3.2: {}
 
-  immer@10.1.1:
-    optional: true
+  immer@10.1.1: {}
 
   import-fresh@3.3.0:
     dependencies:

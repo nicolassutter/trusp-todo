@@ -10,6 +10,7 @@ import {
 import { pb, type Todo } from '~/utils/pocketbase'
 import { TodoItem } from '~/components/TodoItem'
 import { AddTodoForm } from '~/components/AddTodoForm'
+import { produce } from 'immer'
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -78,28 +79,30 @@ function HomeComponent() {
       const previousTodos = queryClient.getQueryData(todosQueryOptions.queryKey)
       const previousTodo = previousTodos?.find((t) => t.id === todoId)
 
-      queryClient.setQueryData<Todo[]>(todosQueryOptions.queryKey, (old) => {
-        return (
-          old?.map((todo) =>
-            todo.id === todoId ? { ...todo, ...newTodo } : todo,
-          ) ?? []
-        )
+      queryClient.setQueryData(todosQueryOptions.queryKey, (old) => {
+        return produce(old ?? [], (draft) => {
+          const todo = draft.find((t) => t.id === todoId)
+
+          if (todo) {
+            Object.assign(todo, newTodo)
+          }
+        })
       })
 
-      return { todoId, previousTodo }
+      return { previousTodo }
     },
-    onError: (_1, _2, context) => {
+    onError: (_error, { id: todoId }, context) => {
       if (!context) return
 
       queryClient.setQueryData(todosQueryOptions.queryKey, (old) => {
         // Only rollback the specific todo that failed
-        return (
-          old?.map((todo) =>
-            todo.id === context.todoId && context.previousTodo
-              ? context.previousTodo
-              : todo,
-          ) ?? []
-        )
+        return produce(old ?? [], (draft) => {
+          const todo = draft.find((t) => t.id === todoId)
+
+          if (todo) {
+            Object.assign(todo, context.previousTodo)
+          }
+        })
       })
     },
   })
