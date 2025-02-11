@@ -12,6 +12,10 @@ export type Todo = {
   completed: boolean
   // id of owner
   user: string
+  // these two are not relations, we just save them as raw strings in the database
+  // assignees come from the random user api
+  assignee_name: string
+  assignee_avatar: string
 }
 
 interface TypedPocketBase extends PocketBase {

@@ -12,15 +12,26 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import type { FunctionComponent } from 'react'
+import type { RandomUser } from '~/utils/randomUsers'
+import { computeAssigneeFullName } from '~/utils/randomUsers'
+import { AssigneeSelect } from './AssigneeSelect'
 
 const formSchema = z.object({
   todoTitle: z.string().min(1, {
     message: 'Todo text must not be empty.',
   }),
+  assigneeName: z.string().min(1, {
+    message: 'Please select an assignee.',
+  }),
 })
 
 interface AddTodoFormProps {
-  onSubmit: (title: string) => void
+  onSubmit: (props: {
+    title: string
+    assigneeName: string
+    assigneeAvatar: string
+  }) => void
+  users: RandomUser[]
 }
 
 export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
@@ -28,11 +39,19 @@ export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       todoTitle: '',
+      assigneeName: '',
     },
   })
 
-  function onSubmit({ todoTitle }: z.infer<typeof formSchema>) {
-    props.onSubmit(todoTitle)
+  function onSubmit({ todoTitle, assigneeName }: z.infer<typeof formSchema>) {
+    props.onSubmit({
+      title: todoTitle,
+      assigneeName: assigneeName,
+      assigneeAvatar:
+        props.users.find(
+          (user) => computeAssigneeFullName(user) === assigneeName,
+        )?.picture.thumbnail ?? '',
+    })
     form.reset()
   }
 
@@ -40,7 +59,7 @@ export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8'
+        className='space-y-4'
       >
         <FormField
           control={form.control}
@@ -48,19 +67,35 @@ export const AddTodoForm: FunctionComponent<AddTodoFormProps> = (props) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <div className='flex space-x-2'>
-                  <Input
-                    placeholder='Add a new todo...'
-                    {...field}
-                  />
-
-                  <Button type='submit'>Add</Button>
-                </div>
+                <Input
+                  placeholder='Add a new todo...'
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name='assigneeName'
+          render={({ field }) => (
+            <FormItem>
+              <AssigneeSelect
+                onValueChange={field.onChange}
+                value={field.value}
+                assignees={props.users.map((user) => ({
+                  name: computeAssigneeFullName(user),
+                  avatar: user.picture.thumbnail,
+                }))}
+              ></AssigneeSelect>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type='submit'>Add Todo</Button>
       </form>
     </Form>
   )

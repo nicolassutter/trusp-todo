@@ -11,6 +11,10 @@ import { pb, type Todo } from '~/utils/pocketbase'
 import { TodoItem } from '~/components/TodoItem'
 import { AddTodoForm } from '~/components/AddTodoForm'
 import { produce } from 'immer'
+import {
+  computeAssigneeFullName,
+  randomUsersResponse,
+} from '~/utils/randomUsers'
 
 export const Route = createFileRoute('/')({
   component: HomeComponent,
@@ -18,6 +22,13 @@ export const Route = createFileRoute('/')({
     requireAuth()
   },
 })
+
+async function getRandomUsers() {
+  const result = await fetch('https://randomuser.me/api/?results=3')
+  const json = await result.json()
+  const parsed = randomUsersResponse.parse(json)
+  return parsed.results
+}
 
 function HomeComponent() {
   const { user } = useAuth()
@@ -33,14 +44,33 @@ function HomeComponent() {
 
   const todosQuery = useQuery(todosQueryOptions)
 
+  const randomUsersQuery = useQuery({
+    queryKey: ['users'],
+    queryFn: getRandomUsers,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false,
+  })
+
   const createTodo = useMutation({
-    mutationFn: async (title: string) => {
+    mutationFn: async ({
+      title,
+      assignee_name,
+      assignee_avatar,
+    }: {
+      title: string
+      assignee_name: string
+      assignee_avatar: string
+    }) => {
       if (!user) throw new Error('User not found')
 
       const todo = await pb.collection('todos').create({
         title,
         user: user.id,
-      })
+        completed: false,
+        assignee_avatar,
+        assignee_name,
+      } satisfies Omit<Todo, 'id'>)
       return todo
     },
     onSuccess() {
@@ -120,13 +150,17 @@ function HomeComponent() {
     )
   }
 
+  const users = randomUsersQuery.data ?? []
+
   return (
     <div className='p-4 w-full'>
       <header className='grid justify-start gap-4 pt-10'>
         <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
           Welcome {user?.name}
         </h1>
-        {todosQuery.isPending && <SpinLoader />}
+        {todosQuery.isPending || randomUsersQuery.isPending ? (
+          <SpinLoader />
+        ) : null}
       </header>
 
       <main className='mt-6 grid gap-4 max-w-3xl'>
@@ -134,22 +168,28 @@ function HomeComponent() {
           Manage todos
         </h2>
 
-        <AddTodoForm
-          onSubmit={(title) => {
-            createTodo.mutate(title)
-          }}
-        ></AddTodoForm>
+        {!randomUsersQuery.isPending && (
+          <AddTodoForm
+            onSubmit={({ title, assigneeAvatar, assigneeName }) => {
+              createTodo.mutate({
+                title,
+                assignee_name: assigneeName,
+                assignee_avatar: assigneeAvatar,
+              })
+            }}
+            users={users}
+          ></AddTodoForm>
+        )}
 
         <div className='grid gap-2'>
           {todosQuery.data?.map((todo) => {
             return (
               <TodoItem
+                users={users}
                 key={todo.id}
                 todo={todo}
-                onUpdateTitle={(newTitle) => {
-                  handleUpdateTodo(todo.id, {
-                    title: newTitle,
-                  })
+                onUpdate={(newTodo) => {
+                  handleUpdateTodo(todo.id, newTodo)
                 }}
                 onToggle={() => {
                   handleUpdateTodo(todo.id, {
