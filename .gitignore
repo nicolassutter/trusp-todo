@@ -19,3 +19,4 @@ dist/
 .env
 pglite
 pgdata
+compose.production.yaml
