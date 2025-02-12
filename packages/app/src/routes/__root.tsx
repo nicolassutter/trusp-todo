@@ -27,7 +27,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function PendingComponent() {
   return (
-    <div className='fixed inset-0 flex items-center justify-center'>
+    <div
+      data-testid='pendingComponent'
+      className='fixed inset-0 flex items-center justify-center'
+    >
       <SpinLoader />
     </div>
   )
@@ -36,7 +39,7 @@ function PendingComponent() {
 function RootComponent() {
   return (
     <>
-      <div>
+      <div data-testid='root'>
         <div className='absolute top-2 left-4'>
           <ModeToggle />
         </div>

@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarImage } from './ui/avatar'
 import { FormControl } from './ui/form'
 
 export const AssigneeSelect: FunctionComponent<{
@@ -41,8 +41,6 @@ export const AssigneeSelect: FunctionComponent<{
                     src={assignee.avatar}
                     alt=''
                   />
-
-                  <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
                 </Avatar>
 
                 {assignee.name}

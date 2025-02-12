@@ -62,4 +62,9 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer],
     },
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './vitest.setup.ts',
+  },
 })

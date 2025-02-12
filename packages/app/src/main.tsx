@@ -33,7 +33,7 @@ function InnerApp() {
   return <RouterProvider router={router} />
 }
 
-function App() {
+export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <InnerApp />
@@ -41,9 +41,13 @@ function App() {
   )
 }
 
-const rootElement = document.getElementById('app')!
+const isTesting = import.meta.env.MODE === 'test'
 
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement)
-  root.render(<App />)
+if (!isTesting) {
+  const rootElement = document.getElementById('app')!
+
+  if (!rootElement.innerHTML) {
+    const root = ReactDOM.createRoot(rootElement)
+    root.render(<App />)
+  }
 }
