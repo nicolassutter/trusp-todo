@@ -2,6 +2,7 @@ services:
   auth:
     container_name: todo_auth_pocketbase
     restart: unless-stopped
+    command: '/pb/pocketbase --automigrate serve --http=0.0.0.0:8080'
     build:
       context: ./packages/auth/
       dockerfile: Dockerfile
@@ -9,3 +10,4 @@ services:
       - 8080:8080
     volumes:
       - ./packages/auth/pb_data:/pb/pb_data
+      - ./packages/auth/pb_migrations:/pb/pb_migrations
