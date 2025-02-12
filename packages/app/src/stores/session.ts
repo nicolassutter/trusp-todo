@@ -80,7 +80,10 @@ export const ensureAuthReady = async (): Promise<SafeAuthRecord> => {
 
   const state = () => useAuthStore.getState()
 
-  if (!state().user) return null
+  if (!state().user) {
+    useAuthStore.setState({ authReady: true })
+    return null
+  }
 
   try {
     await pb.collection('users').authRefresh()
@@ -97,7 +100,7 @@ export const ensureAuthReady = async (): Promise<SafeAuthRecord> => {
 export const LoginPageApi = getRouteApi('/login')
 
 export const requireAuth = () => {
-  if (!isLoggedIn) {
+  if (!isLoggedIn()) {
     throw redirect({
       to: '/login',
     })

@@ -1,7 +1,7 @@
 import PocketBase, { type RecordService } from 'pocketbase'
 import { config } from './config'
 
-type User = {
+export type User = {
   email: string
   name?: string
   avatar?: string
