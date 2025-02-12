@@ -127,7 +127,7 @@ export const TodoItem: FunctionComponent<{
                 variant='ghost'
                 size='icon'
                 onClick={handleEditClick}
-                className='text-blue-600 hover:text-blue-700 hover:bg-blue-100 shrink-0'
+                className='text-blue-600 hover:text-blue-700 hover:bg-blue-100 shrink-0 dark:text-blue-400 dark:hover:text-blue-400 dark:hover:bg-blue-400/10'
               >
                 <Edit2 className='h-4 w-4' />
                 <span className='sr-only'>Edit todo</span>
@@ -138,7 +138,7 @@ export const TodoItem: FunctionComponent<{
               variant='ghost'
               size='icon'
               onClick={onDelete}
-              className='text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0'
+              className='text-red-600 hover:text-destructive hover:bg-destructive/10 shrink-0'
             >
               <Trash2 className='h-4 w-4' />
               <span className='sr-only'>Delete todo</span>

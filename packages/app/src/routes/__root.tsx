@@ -3,6 +3,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { createRootRouteWithContext } from '@tanstack/react-router'
 import { ensureAuthReady } from '~/stores/session'
 import { SpinLoader } from '~/components/Loaders'
+import { ModeToggle } from '~/components/ModeToggle'
 
 type MyRouterContext = { [key: string]: never }
 
@@ -35,7 +36,10 @@ function PendingComponent() {
 function RootComponent() {
   return (
     <>
-      <div className='flex'>
+      <div>
+        <div className='absolute top-2 left-4'>
+          <ModeToggle />
+        </div>
         <Outlet />
       </div>
 
