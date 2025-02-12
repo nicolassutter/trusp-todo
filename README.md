@@ -4,6 +4,7 @@ A todolist to manage... todos
 
 - User account (registration disabled) with a demo acount open to the public (credentials displayed on the login page)
 - Basic CRUD operations on todos
+- Installable as a PWA
 
 ## Stack
 
@@ -16,6 +17,7 @@ A todolist to manage... todos
 - Vite
 - Zod and tRPC
 - shadcn/ui for the amazing components
+- Vite PWA
 
 ### Backend
 
