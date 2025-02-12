@@ -44,6 +44,6 @@ export default [
     },
   },
   {
-    ignores: ['**/dist/**/*', '**/.nitro'],
+    ignores: ['**/dist/**/*', '**/.nitro', '**/packages/auth'],
   },
 ]
